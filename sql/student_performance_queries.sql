@@ -41,4 +41,27 @@ FROM student_habits_performance;
 -- analyze head of data and devise questions
 SELECT * FROM student_habits_performance LIMIT 5;
 
+-- Question 1: What is the mean and median exam score?
+SELECT round(avg(exam_score)::numeric, 2) AS mean,
+	   percentile_cont(.5) WITHIN GROUP (ORDER BY exam_score) AS median
+FROM student_habits_performance;
+
+-- Question 2: What is the correlation between exam scores and screen time?
+	-- Create new column titled screen_time (social_media_hours + netflix_hours)
+ALTER TABLE student_habits_performance ADD COLUMN screen_time real;
+
+	-- Fill screen_time column
+UPDATE student_habits_performance
+SET screen_time = round((social_media_hours + netflix_hours)::numeric, 2);
+
+	-- 25th, 50th, and 75th percentiles of screen_time compared to exam_scores
+WITH percentile ()
+SELECT round((percentile_cont(.25) WITHIN GROUP (ORDER BY screen_time))::numeric, 2) AS percentile_25,
+	   round(avg(exam_score)::numeric, 2) AS mean_exam, 
+	   round((percentile_cont(.5) WITHIN GROUP (ORDER BY exam_score))::numeric, 2) AS median_exam
+FROM student_habits_performance
+WHERE screen_time >= percentile_25;
+
+round((percentile_cont(.5) WITHIN GROUP (ORDER BY screen_time))::numeric, 2) AS percentile_50,
+	   round((percentile_cont(.75) WITHIN GROUP (ORDER BY screen_time))::numeric, 2) AS percentile_75
 

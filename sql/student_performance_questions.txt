@@ -1,0 +1,11 @@
+1. What is the mean and median exam score? 
+2. What is the correlation between exam scores and screen time? 
+3. What is the correlation between exam scores and mental health ratings? 
+4. If low mental health ratings are correlated to low exam scores, what can be causing low mental health (e.g., sleep, screen time, exercise). 
+5. Does parent education level correlate to improved student habits? 
+6. What is the correlation between exam scores and sleep?
+7. Do students who exercise frequently (at least 3 times per week) have better overall habits?
+8. Do students with part-time jobs and/or extracurricular activities have generally better or worse habits? Are they able to study as much as students without jobs or extracurriculars? 
+9. Can poor health habits like not exercising, sleeping, and eating correctly contribute to better habits overall?
+10. Which gender experiences worse mental health?
+11. What is the correlation between screen time and sleep hours? Can excessive screen time lead to less sleep?
