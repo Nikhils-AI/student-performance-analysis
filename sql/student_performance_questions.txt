@@ -3,7 +3,7 @@
 3. What is the correlation between exam scores and mental health ratings? 
 4. Does parent education level correlate to improved student habits and, as a result, high exam scores?
 5. What is the correlation between exam scores and sleep?
-6. Do students who exercise frequently (at least 3 times per week) have better overall habits?
+6. Do students who exercise frequently (at least 3 times per week) have better overall habits and higher exam scores?
 7. Do students with part-time jobs and/or extracurricular activities have generally better or worse habits? Are they able to study as much as students without jobs or extracurriculars? 
 8. Can poor health habits like not exercising, sleeping, and eating correctly contribute to better habits overall?
 9. Which gender experiences worse mental health?
