@@ -146,12 +146,12 @@ FROM student_habits_performance;
 
 	-- Check habits and exam scores throughout all parental education levels
 SELECT parental_education_level,
-       ROUND(AVG(study_hours)::numeric, 2) AS mean_study_hours,
-       ROUND(AVG(screen_time)::numeric, 2) AS mean_screen_time,
-       ROUND(AVG(attendance_percentage)::numeric, 2) AS mean_attendance_percentage,
-       ROUND(AVG(sleep_hours)::numeric, 2) AS mean_sleep_hours,
-       ROUND(AVG(exercise_frequency)::numeric, 2) AS mean_exercise_frequency,
-       ROUND(AVG(exam_score)::numeric, 2) AS mean_exam_score
+       round(avg(study_hours)::numeric, 2) AS mean_study_hours,
+       round(avg(screen_time)::numeric, 2) AS mean_screen_time,
+       round(avg(attendance_percentage)::numeric, 2) AS mean_attendance_percentage,
+       round(avg(sleep_hours)::numeric, 2) AS mean_sleep_hours,
+       round(avg(exercise_frequency)::numeric, 2) AS mean_exercise_frequency,
+       round(avg(exam_score)::numeric, 2) AS mean_exam_score
 FROM student_habits_performance
 GROUP BY parental_education_level
 ORDER BY
@@ -205,3 +205,15 @@ SELECT 'Q4' AS quartile,
 	   round((percentile_cont(.5) WITHIN GROUP (ORDER BY exam_score))::numeric, 2) AS median_score
 FROM student_habits_performance, percentiles
 WHERE sleep_hours > p75;
+
+-- Question 6: Do students who exercise frequently (at least 3 times per week) have better overall habits?
+SELECT exercise_frequency, 
+	   round(avg(study_hours)::numeric, 2) AS mean_study_hours,
+       round(avg(screen_time)::numeric, 2) AS mean_screen_time,
+       round(avg(attendance_percentage)::numeric, 2) AS mean_attendance_percentage,
+       round(avg(sleep_hours)::numeric, 2) AS mean_sleep_hours,
+       round(avg(exam_score)::numeric, 2) AS mean_exam_score
+FROM student_habits_performance
+WHERE exercise_frequency >= 3
+GROUP BY exercise_frequency
+ORDER BY exercise_frequency ASC;
