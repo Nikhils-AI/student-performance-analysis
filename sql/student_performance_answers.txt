@@ -6,3 +6,6 @@
 
 4. There is no positive correlation between parental education level and habits/exam score. In fact, students whose parents have no formal education outperform students whose parents hold Master's degrees -- both in exam scores and overall habits.
 
+5. The more a student sleeps, the higher their exam scores. 
+
+6. 
