@@ -4,4 +4,5 @@
 
 3. The higher a student's mental health rating, the higher their exam score. 
 
-4. 
+4. There is no positive correlation between parental education level and habits/exam score. In fact, students whose parents have no formal education outperform students whose parents hold Master's degrees -- both in exam scores and overall habits.
+

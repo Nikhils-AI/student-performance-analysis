@@ -42,7 +42,7 @@ FROM student_habits_performance;
 SELECT * FROM student_habits_performance LIMIT 5;
 
 -- Question 1: What is the mean and median exam score?
-SELECT ROUND(avg(exam_score)::numeric, 2) AS mean,
+SELECT round(avg(exam_score)::numeric, 2) AS mean,
 	   percentile_cont(.5) WITHIN GROUP (ORDER BY exam_score) AS median
 FROM student_habits_performance;
 
@@ -62,29 +62,29 @@ WITH percentiles AS (
 	FROM student_habits_performance
 )
 		-- Q1 (0 - 25th percentile)
-SELECT ROUND(avg(exam_score)::numeric, 2) AS mean_score,
-	   ROUND((percentile_cont(.5) WITHIN GROUP (ORDER BY exam_score))::numeric, 2) AS median_score
+SELECT round(avg(exam_score)::numeric, 2) AS mean_score,
+	   round((percentile_cont(.5) WITHIN GROUP (ORDER BY exam_score))::numeric, 2) AS median_score
 FROM student_habits_performance, percentiles
 WHERE screen_time <= p25
 
 UNION ALL
 		-- Q2 (25th - 50th percentile)
-SELECT ROUND(avg(exam_score)::numeric, 2) AS mean_score,
-	   ROUND((percentile_cont(.5) WITHIN GROUP (ORDER BY exam_score))::numeric, 2) AS median_score
+SELECT round(avg(exam_score)::numeric, 2) AS mean_score,
+	   round((percentile_cont(.5) WITHIN GROUP (ORDER BY exam_score))::numeric, 2) AS median_score
 FROM student_habits_performance, percentiles
 WHERE screen_time > p25 AND screen_time <= p50
 
 UNION ALL 
 		-- Q3 (50th - 75th percentile)
-SELECT ROUND(avg(exam_score)::numeric, 2) AS mean_score,
-	   ROUND((percentile_cont(.5) WITHIN GROUP (ORDER BY exam_score))::numeric, 2) AS median_score
+SELECT round(avg(exam_score)::numeric, 2) AS mean_score,
+	   round((percentile_cont(.5) WITHIN GROUP (ORDER BY exam_score))::numeric, 2) AS median_score
 FROM student_habits_performance, percentiles
 WHERE screen_time > p50 AND screen_time <= p75
 
 UNION ALL
 		-- Q4 (75th - 100th percentile)
-SELECT ROUND(avg(exam_score)::numeric, 2) AS mean_score,
-	   ROUND((percentile_cont(.5) WITHIN GROUP (ORDER BY exam_score))::numeric, 2) AS median_score
+SELECT round(avg(exam_score)::numeric, 2) AS mean_score,
+	   round((percentile_cont(.5) WITHIN GROUP (ORDER BY exam_score))::numeric, 2) AS median_score
 FROM student_habits_performance, percentiles
 WHERE screen_time > p75;
 	
@@ -97,29 +97,52 @@ WITH percentiles AS (
 	FROM student_habits_performance
 )
 		-- Q1 (0 - 25th percentile)
-SELECT ROUND(avg(exam_score)::numeric, 2) AS mean_score,
-	   ROUND((percentile_cont(.5) WITHIN GROUP (ORDER BY exam_score))::numeric, 2) AS median_score
+SELECT round(avg(exam_score)::numeric, 2) AS mean_score,
+	   round((percentile_cont(.5) WITHIN GROUP (ORDER BY exam_score))::numeric, 2) AS median_score
 FROM student_habits_performance, percentiles
 WHERE mental_health_rating <= p25
 
 UNION ALL
 		-- Q2 (25th - 50th percentile)
-SELECT ROUND(avg(exam_score)::numeric, 2) AS mean_score,
-	   ROUND((percentile_cont(.5) WITHIN GROUP (ORDER BY exam_score))::numeric, 2) AS median_score
+SELECT round(avg(exam_score)::numeric, 2) AS mean_score,
+	   round((percentile_cont(.5) WITHIN GROUP (ORDER BY exam_score))::numeric, 2) AS median_score
 FROM student_habits_performance, percentiles
 WHERE mental_health_rating > p25 AND mental_health_rating <= p50
 
 UNION ALL 
 		-- Q3 (50th - 75th percentile)
-SELECT ROUND(avg(exam_score)::numeric, 2) AS mean_score,
-	   ROUND((percentile_cont(.5) WITHIN GROUP (ORDER BY exam_score))::numeric, 2) AS median_score
+SELECT round(avg(exam_score)::numeric, 2) AS mean_score,
+	   round((percentile_cont(.5) WITHIN GROUP (ORDER BY exam_score))::numeric, 2) AS median_score
 FROM student_habits_performance, percentiles
 WHERE mental_health_rating > p50 AND mental_health_rating <= p75
 
 UNION ALL
 		-- Q4 (75th - 100th percentile)
-SELECT ROUND(avg(exam_score)::numeric, 2) AS mean_score,
-	   ROUND((percentile_cont(.5) WITHIN GROUP (ORDER BY exam_score))::numeric, 2) AS median_score
+SELECT round(avg(exam_score)::numeric, 2) AS mean_score,
+	   round((percentile_cont(.5) WITHIN GROUP (ORDER BY exam_score))::numeric, 2) AS median_score
 FROM student_habits_performance, percentiles
 WHERE mental_health_rating > p75;
 
+-- Question 4: Does parent education level correlate to improved student habits and, as a result, high exam scores?
+	-- Check unique values in parental_education_level column
+SELECT DISTINCT parental_education_level
+FROM student_habits_performance;
+
+	-- Check habits and exam scores throughout all parental education levels
+SELECT parental_education_level,
+       ROUND(AVG(study_hours)::numeric, 2) AS mean_study_hours,
+       ROUND(AVG(screen_time)::numeric, 2) AS mean_screen_time,
+       ROUND(AVG(attendance_percentage)::numeric, 2) AS mean_attendance_percentage,
+       ROUND(AVG(sleep_hours)::numeric, 2) AS mean_sleep_hours,
+       ROUND(AVG(exercise_frequency)::numeric, 2) AS mean_exercise_frequency,
+       ROUND(AVG(exam_score)::numeric, 2) AS mean_exam_score
+FROM student_habits_performance
+GROUP BY parental_education_level
+ORDER BY
+	CASE parental_education_level
+	WHEN 'None' THEN 1
+	WHEN 'High School' THEN 2
+	WHEN 'Bachelor' THEN 3
+	WHEN 'Master' THEN 4
+	ELSE 5
+	END;
