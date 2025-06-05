@@ -1,0 +1,7 @@
+1. The mean exam score is 69.6% and the median exam score is 70.5%
+
+2. The higher a student's screen time, the lower their exam score. 
+
+3. The higher a student's mental health rating, the higher their exam score. 
+
+4. 

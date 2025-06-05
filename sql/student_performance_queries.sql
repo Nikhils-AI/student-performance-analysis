@@ -42,7 +42,7 @@ FROM student_habits_performance;
 SELECT * FROM student_habits_performance LIMIT 5;
 
 -- Question 1: What is the mean and median exam score?
-SELECT round(avg(exam_score)::numeric, 2) AS mean,
+SELECT ROUND(avg(exam_score)::numeric, 2) AS mean,
 	   percentile_cont(.5) WITHIN GROUP (ORDER BY exam_score) AS median
 FROM student_habits_performance;
 
@@ -52,16 +52,74 @@ ALTER TABLE student_habits_performance ADD COLUMN screen_time real;
 
 	-- Fill screen_time column
 UPDATE student_habits_performance
-SET screen_time = round((social_media_hours + netflix_hours)::numeric, 2);
+SET screen_time = ROUND((social_media_hours + netflix_hours)::numeric, 2);
 
-	-- 25th, 50th, and 75th percentiles of screen_time compared to exam_scores
-WITH percentile ()
-SELECT round((percentile_cont(.25) WITHIN GROUP (ORDER BY screen_time))::numeric, 2) AS percentile_25,
-	   round(avg(exam_score)::numeric, 2) AS mean_exam, 
-	   round((percentile_cont(.5) WITHIN GROUP (ORDER BY exam_score))::numeric, 2) AS median_exam
-FROM student_habits_performance
-WHERE screen_time >= percentile_25;
+	-- Calculate the average and median exam score in all four quartiles of screen_time
+WITH percentiles AS (
+	SELECT percentile_cont(.25) WITHIN GROUP (ORDER BY screen_time) AS p25,
+		   percentile_cont(.5) WITHIN GROUP (ORDER BY screen_time) AS p50,
+		   percentile_cont(.75) WITHIN GROUP (ORDER BY screen_time) AS p75
+	FROM student_habits_performance
+)
+		-- Q1 (0 - 25th percentile)
+SELECT ROUND(avg(exam_score)::numeric, 2) AS mean_score,
+	   ROUND((percentile_cont(.5) WITHIN GROUP (ORDER BY exam_score))::numeric, 2) AS median_score
+FROM student_habits_performance, percentiles
+WHERE screen_time <= p25
 
-round((percentile_cont(.5) WITHIN GROUP (ORDER BY screen_time))::numeric, 2) AS percentile_50,
-	   round((percentile_cont(.75) WITHIN GROUP (ORDER BY screen_time))::numeric, 2) AS percentile_75
+UNION ALL
+		-- Q2 (25th - 50th percentile)
+SELECT ROUND(avg(exam_score)::numeric, 2) AS mean_score,
+	   ROUND((percentile_cont(.5) WITHIN GROUP (ORDER BY exam_score))::numeric, 2) AS median_score
+FROM student_habits_performance, percentiles
+WHERE screen_time > p25 AND screen_time <= p50
+
+UNION ALL 
+		-- Q3 (50th - 75th percentile)
+SELECT ROUND(avg(exam_score)::numeric, 2) AS mean_score,
+	   ROUND((percentile_cont(.5) WITHIN GROUP (ORDER BY exam_score))::numeric, 2) AS median_score
+FROM student_habits_performance, percentiles
+WHERE screen_time > p50 AND screen_time <= p75
+
+UNION ALL
+		-- Q4 (75th - 100th percentile)
+SELECT ROUND(avg(exam_score)::numeric, 2) AS mean_score,
+	   ROUND((percentile_cont(.5) WITHIN GROUP (ORDER BY exam_score))::numeric, 2) AS median_score
+FROM student_habits_performance, percentiles
+WHERE screen_time > p75;
+	
+-- Question 3: What is the correlation between exam scores and mental health ratings?
+	-- Calculate the average and median exam score in all four quartiles of mental_health_rating
+WITH percentiles AS (
+	SELECT percentile_cont(.25) WITHIN GROUP (ORDER BY mental_health_rating) AS p25,
+		   percentile_cont(.5) WITHIN GROUP (ORDER BY mental_health_rating) AS p50,
+		   percentile_cont(.75) WITHIN GROUP (ORDER BY mental_health_rating) AS p75
+	FROM student_habits_performance
+)
+		-- Q1 (0 - 25th percentile)
+SELECT ROUND(avg(exam_score)::numeric, 2) AS mean_score,
+	   ROUND((percentile_cont(.5) WITHIN GROUP (ORDER BY exam_score))::numeric, 2) AS median_score
+FROM student_habits_performance, percentiles
+WHERE mental_health_rating <= p25
+
+UNION ALL
+		-- Q2 (25th - 50th percentile)
+SELECT ROUND(avg(exam_score)::numeric, 2) AS mean_score,
+	   ROUND((percentile_cont(.5) WITHIN GROUP (ORDER BY exam_score))::numeric, 2) AS median_score
+FROM student_habits_performance, percentiles
+WHERE mental_health_rating > p25 AND mental_health_rating <= p50
+
+UNION ALL 
+		-- Q3 (50th - 75th percentile)
+SELECT ROUND(avg(exam_score)::numeric, 2) AS mean_score,
+	   ROUND((percentile_cont(.5) WITHIN GROUP (ORDER BY exam_score))::numeric, 2) AS median_score
+FROM student_habits_performance, percentiles
+WHERE mental_health_rating > p50 AND mental_health_rating <= p75
+
+UNION ALL
+		-- Q4 (75th - 100th percentile)
+SELECT ROUND(avg(exam_score)::numeric, 2) AS mean_score,
+	   ROUND((percentile_cont(.5) WITHIN GROUP (ORDER BY exam_score))::numeric, 2) AS median_score
+FROM student_habits_performance, percentiles
+WHERE mental_health_rating > p75;
 
