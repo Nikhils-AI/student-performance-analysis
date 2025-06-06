@@ -256,3 +256,55 @@ ORDER BY
 		WHEN part_time_job = 'No' AND extracurricular_participation = 'No' THEN 4
 		ELSE 5
 		END;
+
+-- Question 8: Which gender experiences worse mental health?
+	-- Group mean and median mental health ratings by gender
+SELECT gender,
+	   round(avg(mental_health_rating)::numeric, 2) AS mean_mental_health_rating,
+	   round((percentile_cont(.5) WITHIN GROUP (ORDER BY mental_health_rating))::numeric, 2) AS median_mental_health_rating
+FROM student_habits_performance
+GROUP BY gender;
+
+-- Question 9: What is the correlation between screen time and sleep hours? Can excessive screen time lead to less sleep?
+	-- Calculate the average and median exam score in all four quartiles of sleep_hours
+WITH percentiles AS (
+	SELECT percentile_cont(.25) WITHIN GROUP (ORDER BY screen_time) AS p25,
+		   percentile_cont(.5) WITHIN GROUP (ORDER BY screen_time) AS p50,
+		   percentile_cont(.75) WITHIN GROUP (ORDER BY screen_time) AS p75
+	FROM student_habits_performance
+)
+		-- Q1 (0 - 25th percentile)
+SELECT 'Q1' AS quartile, 
+	   COUNT(*),
+	   round(avg(sleep_hours)::numeric, 2) AS mean_sleep,
+	   round((percentile_cont(.5) WITHIN GROUP (ORDER BY sleep_hours))::numeric, 2) AS median_sleep
+FROM student_habits_performance, percentiles
+WHERE screen_time <= p25
+
+UNION ALL
+		-- Q2 (25th - 50th percentile)
+SELECT 'Q2' AS quartile, 
+	   COUNT(*),
+ 	   round(avg(sleep_hours)::numeric, 2) AS mean_sleep,
+	   round((percentile_cont(.5) WITHIN GROUP (ORDER BY sleep_hours))::numeric, 2) AS median_sleep
+FROM student_habits_performance, percentiles
+WHERE screen_time > p25 AND screen_time <= p50
+
+UNION ALL 
+		-- Q3 (50th - 75th percentile)
+SELECT 'Q3' AS quartile, 
+	   COUNT(*),
+	   round(avg(sleep_hours)::numeric, 2) AS mean_sleep,
+	   round((percentile_cont(.5) WITHIN GROUP (ORDER BY sleep_hours))::numeric, 2) AS median_sleep
+FROM student_habits_performance, percentiles
+WHERE screen_time > p50 AND screen_time <= p75
+
+UNION ALL
+		-- Q4 (75th - 100th percentile)
+SELECT 'Q4' AS quartile, 
+	   COUNT(*),
+	   round(avg(sleep_hours)::numeric, 2) AS mean_sleep,
+	   round((percentile_cont(.5) WITHIN GROUP (ORDER BY sleep_hours))::numeric, 2) AS median_sleep
+FROM student_habits_performance, percentiles
+WHERE screen_time > p75;
+
