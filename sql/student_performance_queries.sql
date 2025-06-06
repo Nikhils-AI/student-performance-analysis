@@ -42,8 +42,8 @@ FROM student_habits_performance;
 SELECT * FROM student_habits_performance LIMIT 5;
 
 -- Question 1: What is the mean and median exam score?
-SELECT round(avg(exam_score)::numeric, 2) AS mean,
-	   percentile_cont(.5) WITHIN GROUP (ORDER BY exam_score) AS median
+SELECT round(avg(exam_score)::numeric, 2) AS mean_score,
+	   percentile_cont(.5) WITHIN GROUP (ORDER BY exam_score) AS median_score
 FROM student_habits_performance;
 
 -- Question 2: What is the correlation between exam scores and screen time?
