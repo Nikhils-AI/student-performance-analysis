@@ -147,11 +147,17 @@ FROM student_habits_performance;
 	-- Check habits and exam scores throughout all parental education levels
 SELECT parental_education_level,
        round(avg(study_hours)::numeric, 2) AS mean_study_hours,
+	   round((percentile_cont(.5) WITHIN GROUP (ORDER BY study_hours))::numeric, 2) AS median_study_hours,
        round(avg(screen_time)::numeric, 2) AS mean_screen_time,
+	   round((percentile_cont(.5) WITHIN GROUP (ORDER BY screen_time))::numeric, 2) AS median_screen_time,
        round(avg(attendance_percentage)::numeric, 2) AS mean_attendance_percentage,
+	   round((percentile_cont(.5) WITHIN GROUP (ORDER BY attendance_percentage))::numeric, 2) AS median_attendance_percentage,
        round(avg(sleep_hours)::numeric, 2) AS mean_sleep_hours,
+	   round((percentile_cont(.5) WITHIN GROUP (ORDER BY sleep_hours))::numeric, 2) AS median_sleep_hours,
        round(avg(exercise_frequency)::numeric, 2) AS mean_exercise_frequency,
-       round(avg(exam_score)::numeric, 2) AS mean_exam_score
+	   round((percentile_cont(.5) WITHIN GROUP (ORDER BY exercise_frequency))::numeric, 2) AS median_exercise_frequency,
+       round(avg(exam_score)::numeric, 2) AS mean_exam_score,
+	   round((percentile_cont(.5) WITHIN GROUP (ORDER BY exam_score))::numeric, 2) AS median_exam_score
 FROM student_habits_performance
 GROUP BY parental_education_level
 ORDER BY
@@ -206,14 +212,47 @@ SELECT 'Q4' AS quartile,
 FROM student_habits_performance, percentiles
 WHERE sleep_hours > p75;
 
--- Question 6: Do students who exercise frequently (at least 3 times per week) have better overall habits?
+-- Question 6: Do students who exercise frequently (at least 3 times per week) have better overall habits and higher exam scores?
+	-- Check habits and exam scores of students who exercise at least 3 times per week
 SELECT exercise_frequency, 
 	   round(avg(study_hours)::numeric, 2) AS mean_study_hours,
+	   round((percentile_cont(.5) WITHIN GROUP (ORDER BY study_hours))::numeric, 2) AS median_study_hours,
        round(avg(screen_time)::numeric, 2) AS mean_screen_time,
+	   round((percentile_cont(.5) WITHIN GROUP (ORDER BY screen_time))::numeric, 2) AS median_screen_time,
        round(avg(attendance_percentage)::numeric, 2) AS mean_attendance_percentage,
+	   round((percentile_cont(.5) WITHIN GROUP (ORDER BY attendance_percentage))::numeric, 2) AS median_attendance_percentage,
        round(avg(sleep_hours)::numeric, 2) AS mean_sleep_hours,
-       round(avg(exam_score)::numeric, 2) AS mean_exam_score
+	   round((percentile_cont(.5) WITHIN GROUP (ORDER BY sleep_hours))::numeric, 2) AS median_sleep_hours,
+       round(avg(exam_score)::numeric, 2) AS mean_exam_score,
+	   round((percentile_cont(.5) WITHIN GROUP (ORDER BY exam_score))::numeric, 2) AS median_exam_score
 FROM student_habits_performance
 WHERE exercise_frequency >= 3
 GROUP BY exercise_frequency
 ORDER BY exercise_frequency ASC;
+
+-- Question 7: Do students with part-time jobs and/or extracurricular activities have generally better or worse habits? Are they able to study as much as students without jobs or extracurriculars? 
+	-- Check habits of students with part-time jobs 
+SELECT part_time_job,
+	   extracurricular_participation,
+	   round(avg(study_hours)::numeric, 2) AS mean_study_hours,
+	   round((percentile_cont(.5) WITHIN GROUP (ORDER BY study_hours))::numeric, 2) AS median_study_hours,
+       round(avg(screen_time)::numeric, 2) AS mean_screen_time,
+	   round((percentile_cont(.5) WITHIN GROUP (ORDER BY screen_time))::numeric, 2) AS median_screen_time,
+       round(avg(attendance_percentage)::numeric, 2) AS mean_attendance_percentage,
+	   round((percentile_cont(.5) WITHIN GROUP (ORDER BY attendance_percentage))::numeric, 2) AS median_attendance_percentage,
+       round(avg(sleep_hours)::numeric, 2) AS mean_sleep_hours,
+	   round((percentile_cont(.5) WITHIN GROUP (ORDER BY sleep_hours))::numeric, 2) AS median_sleep_hours,
+	   round(avg(exercise_frequency)::numeric, 2) AS mean_exercise_frequency,
+	   round((percentile_cont(.5) WITHIN GROUP (ORDER BY exercise_frequency))::numeric, 2) AS median_exercise_frequency,
+       round(avg(exam_score)::numeric, 2) AS mean_exam_score,
+	   round((percentile_cont(.5) WITHIN GROUP (ORDER BY exam_score))::numeric, 2) AS median_exam_score
+FROM student_habits_performance
+GROUP BY part_time_job, extracurricular_participation
+ORDER BY 
+	CASE 
+		WHEN part_time_job = 'Yes' AND extracurricular_participation = 'Yes' THEN 1
+		WHEN part_time_job = 'Yes' AND extracurricular_participation = 'No' THEN 2
+		WHEN part_time_job = 'No' AND extracurricular_participation = 'Yes' THEN 3
+		WHEN part_time_job = 'No' AND extracurricular_participation = 'No' THEN 4
+		ELSE 5
+		END;

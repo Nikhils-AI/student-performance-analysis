@@ -9,3 +9,5 @@
 5. The more a student sleeps, the higher their exam scores. 
 
 6. Higher exercise frequencies are correlated to higher exam scores but there is no correlation between exercise frequency and student habits.
+
+7. Students who work part-time jobs, participate in extracurricular activities, or both shows no substantial impact on study hours, screen time, attendance percentage, sleep hours,  exercise frequency. However, students who work part-time jobs AND participate in extracurriculars show slightly lower exam scores.
