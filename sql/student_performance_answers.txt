@@ -10,7 +10,7 @@
 
 6. Higher exercise frequencies are correlated to higher exam scores but there is no correlation between exercise frequency and student habits.
 
-7. Students who work part-time jobs, participate in extracurricular activities, or both shows no substantial impact on study hours, screen time, attendance percentage, sleep hours,  exercise frequency. However, students who work part-time jobs AND participate in extracurriculars show slightly lower exam scores.
+7. Students who work part-time jobs, participate in extracurricular activities, or both show no substantial impact on study hours, screen time, attendance percentage, sleep hours, exercise frequency. However, students who work part-time jobs AND participate in extracurriculars show slightly lower exam scores.
 
 8. The difference in mental health ratings between genders is little-to-none. 
 
