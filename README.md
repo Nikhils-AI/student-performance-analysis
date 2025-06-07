@@ -24,14 +24,19 @@ A data analysis project exploring how various student habits (e.g., study hours,
 ---
 
 ## 📁 Project Structure
+
+<pre><code>
 student-performance-analysis/
 │
-├── data/ # Raw and processed CSVs
-├── notebooks/ # Jupyter notebooks for each analysis question
-├── sql/ # SQL queries used for filtering & aggregation
-├── venv/ # Virtual environment (excluded from Git)
+├── data/               # Raw and processed CSVs
+├── notebooks/          # Jupyter notebooks for each analysis question
+├── sql/                # SQL queries used for filtering & aggregation
+├── venv/               # Virtual environment (excluded from Git)
 │
-├── .gitignore # Git ignore rules for venv, pycache, etc.
-├── .gitattributes # Git attributes (e.g., line endings)
-├── README.md # Project documentation
-└── requirements.txt # Python dependencies
+├── .gitignore          # Git ignore rules for venv, pycache, etc.
+├── .gitattributes      # Git attributes (e.g., line endings)
+├── README.md           # Project documentation
+└── requirements.txt    # Python dependencies
+</code></pre>
+
+
